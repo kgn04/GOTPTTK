@@ -1,6 +1,8 @@
 package com.example.gotpttk
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
@@ -19,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,20 +44,28 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+
+
 @Composable
 fun LandingPage() {
     var expandedButton by remember {
         mutableStateOf("")
     }
+    val mContext = LocalContext.current
+    val defaultClickToast = {
+        Toast.makeText(mContext, "Ta funkcjonalność nie została zaimplementowana", Toast.LENGTH_SHORT).show()
+    }
     val buttons: Map<String, Map<String, () -> Unit>> = mapOf(
         "Moja książeczka" to mapOf(
-            "Punkty" to {},
-            "Inne" to {},
+            "Punkty" to {
+                val intent = Intent(mContext, PointsActivity::class.java)
+                mContext.startActivity(intent)
+                        },
+            "Szczegóły" to defaultClickToast,
         ),
         "Wędrówki" to mapOf(
-            "Planuj" to {},
-            "Jeszcze inne" to {},
-            "Idk" to {}
+            "Planuj" to defaultClickToast,
+            "Historia" to defaultClickToast
         )
     )
     Column(
@@ -87,7 +98,7 @@ fun LandingPage() {
             if (expandedButton == buttonName) {
                 Column {
                     subButtons.forEach { (subButtonName, function) ->
-                        Spacer(modifier = Modifier.height(10.dp))
+                        Spacer(modifier = Modifier.height(5.dp))
                         Button(
                             onClick = function,
                             modifier = Modifier
