@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">GOTPTTK</string>
     <string name="title_activity_points">PointsActivity</string>
+    <string name="title_activity_planning">Planning</string>
 </resources>

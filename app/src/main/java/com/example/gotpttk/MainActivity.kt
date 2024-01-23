@@ -64,7 +64,10 @@ fun LandingPage() {
             "Szczegóły" to defaultClickToast,
         ),
         "Wędrówki" to mapOf(
-            "Planuj" to defaultClickToast,
+            "Planuj" to {
+                val intent = Intent(mContext, PlanningActivity::class.java)
+                mContext.startActivity(intent)
+                        },
             "Historia" to defaultClickToast
         )
     )

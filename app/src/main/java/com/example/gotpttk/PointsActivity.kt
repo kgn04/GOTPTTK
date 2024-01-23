@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.gotpttk.ui.theme.GOTPTTKTheme
 
 class PointsActivity : ComponentActivity() {
@@ -36,7 +37,7 @@ fun PointsAlertDialog(points: Int, activity: ComponentActivity) {
             Text(text = "Punkty")
         },
         text = {
-            Text(text = "Posiadasz $points punktów")
+            Text(text = "Posiadasz $points punktów.")
         },
         onDismissRequest = { },
         confirmButton = {
@@ -47,4 +48,12 @@ fun PointsAlertDialog(points: Int, activity: ComponentActivity) {
             }
         },
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PointsAlertDialogPreview() {
+    GOTPTTKTheme {
+        PointsAlertDialog(10, ComponentActivity())
+    }
 }
