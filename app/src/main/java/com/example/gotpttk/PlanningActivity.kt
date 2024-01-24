@@ -1,5 +1,6 @@
 package com.example.gotpttk
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -7,12 +8,17 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
@@ -35,19 +41,26 @@ class PlanningActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    PlanningView()
+                    PlanningView(this, Graph())
                 }
             }
         }
     }
 }
 
+@SuppressLint("MutableCollectionMutableState")
 @Composable
-fun PlanningView() {
+fun PlanningView(activity: ComponentActivity, graph: Graph) {
     val configuration = LocalConfiguration.current
-
     val screenHeight = configuration.screenHeightDp
     val screenWidth = configuration.screenWidthDp
+    var isPlanned by remember { mutableStateOf(false) }
+    var chosen by remember {
+        mutableStateOf(graph.chosen)
+    }
+    var availableToChoose by remember {
+        mutableStateOf(graph.availableToChoose)
+    }
     val coords: List<Pair<Int, Int>> = listOf(
         Pair(30, 40),
         Pair(118, 30),
@@ -71,26 +84,35 @@ fun PlanningView() {
         Pair(187, 665),
         Pair(287, 728),
         Pair(318, 610)
-
     )
     Box(
         modifier = with (Modifier){
             fillMaxSize()
                 .paint(
-                    // Replace with your image id
                     painterResource(id = R.mipmap.mapa),
                     contentScale = ContentScale.FillBounds)
 
         })
     {
-        coords.forEach {
-            pair ->
+        coords.forEachIndexed {
+            index, pair ->
+            val color: Color = if (chosen.contains(index))
+                Color.Blue
+            else if (availableToChoose.contains(index))
+                Color.Red
+            else
+                Color.Gray
+            val mContext = LocalContext.current
             TextButton(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    graph.chooseStop(index)
+                    chosen = graph.chosen
+                    availableToChoose = graph.availableToChoose
+                          },
                 modifier = Modifier
                     .offset(x = (pair.first*screenWidth/390).dp, y = (pair.second*screenHeight/850).dp)) {
                 Text(text = "X",
-                    color = Color.Red,
+                    color = color,
                     fontWeight = FontWeight.Bold,
                     fontSize = 45.sp
                 )
@@ -98,10 +120,41 @@ fun PlanningView() {
         }
         Button(
             modifier = Modifier.offset(x = (screenWidth * 0.05).dp, y = (screenHeight * 0.85).dp),
-            onClick = { /*TODO*/ }
+            onClick = { isPlanned = true }
         ) {
             Text(text = "Potwierdź")
         }
+        if (isPlanned)
+            AlertDialog(
+                title = {
+                    Text(text = "Podsumowanie")
+                },
+                text = {
+                    Text(text = "Długość wędrówki:          ${graph.summaryLength} m\n" +
+                            "Suma podejść:                 ${graph.summaryUphills} m\n" +
+                            "Punkty do zdobycia:        ${graph.points}")
+                },
+                onDismissRequest = {
+
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            isPlanned = false
+                            activity.finish()
+                        }
+                    ) {
+                        Text("Zaplanuj")
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = { isPlanned = false }
+                    ) {
+                        Text("Anuluj")
+                    }
+                }
+            )
     }
 }
 
@@ -109,6 +162,6 @@ fun PlanningView() {
 @Composable
 fun PlanningViewPreview() {
     GOTPTTKTheme {
-        PlanningView()
+        PlanningView(ComponentActivity(), Graph())
     }
 }

@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,16 +53,17 @@ fun LandingPage() {
     var expandedButton by remember {
         mutableStateOf("")
     }
+    var checkingPoints by remember {
+        mutableStateOf(false)
+    }
+    val points = 10
     val mContext = LocalContext.current
     val defaultClickToast = {
         Toast.makeText(mContext, "Ta funkcjonalność nie została zaimplementowana", Toast.LENGTH_SHORT).show()
     }
     val buttons: Map<String, Map<String, () -> Unit>> = mapOf(
         "Moja książeczka" to mapOf(
-            "Punkty" to {
-                val intent = Intent(mContext, PointsActivity::class.java)
-                mContext.startActivity(intent)
-                        },
+            "Punkty" to { checkingPoints = true },
             "Szczegóły" to defaultClickToast,
         ),
         "Wędrówki" to mapOf(
@@ -71,6 +74,23 @@ fun LandingPage() {
             "Historia" to defaultClickToast
         )
     )
+    if (checkingPoints)
+        AlertDialog(
+            title = {
+                Text(text = "Punkty")
+            },
+            text = {
+                Text(text = "Posiadasz $points punktów.")
+            },
+            onDismissRequest = { },
+            confirmButton = {
+                TextButton(
+                    onClick = { checkingPoints = false }
+                ) {
+                    Text("OK")
+                }
+            },
+        )
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
