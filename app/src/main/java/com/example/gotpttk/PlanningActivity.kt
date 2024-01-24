@@ -102,7 +102,6 @@ fun PlanningView(activity: ComponentActivity, graph: Graph) {
                 Color.Red
             else
                 Color.Gray
-            val mContext = LocalContext.current
             TextButton(
                 onClick = {
                     graph.chooseStop(index)
@@ -118,21 +117,29 @@ fun PlanningView(activity: ComponentActivity, graph: Graph) {
                 )
             }
         }
+        val mContext = LocalContext.current
         Button(
             modifier = Modifier.offset(x = (screenWidth * 0.05).dp, y = (screenHeight * 0.85).dp),
-            onClick = { isPlanned = true }
+            onClick = {
+                if (chosen.size < 2)
+                    Toast.makeText(mContext, "Nie wybrano trasy.", Toast.LENGTH_LONG).show()
+                else
+                    isPlanned = true
+            }
         ) {
             Text(text = "Potwierdź")
         }
-        if (isPlanned)
+        if (isPlanned) {
             AlertDialog(
                 title = {
                     Text(text = "Podsumowanie")
                 },
                 text = {
-                    Text(text = "Długość wędrówki:          ${graph.summaryLength} m\n" +
-                            "Suma podejść:                 ${graph.summaryUphills} m\n" +
-                            "Punkty do zdobycia:        ${graph.points}")
+                    Text(
+                        text = "Długość wędrówki:          ${graph.summaryLength} m\n" +
+                                "Suma podejść:                 ${graph.summaryUphills} m\n" +
+                                "Punkty do zdobycia:        ${graph.points}"
+                    )
                 },
                 onDismissRequest = {
 
@@ -142,6 +149,7 @@ fun PlanningView(activity: ComponentActivity, graph: Graph) {
                         onClick = {
                             isPlanned = false
                             activity.finish()
+                            Toast.makeText(mContext, "Wędrówka zaplanowana pomyślnie.", Toast.LENGTH_LONG).show()
                         }
                     ) {
                         Text("Zaplanuj")
@@ -155,6 +163,7 @@ fun PlanningView(activity: ComponentActivity, graph: Graph) {
                     }
                 }
             )
+        }
     }
 }
 
