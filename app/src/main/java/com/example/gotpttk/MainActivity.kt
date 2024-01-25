@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -28,7 +29,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat.startActivity
 import com.example.gotpttk.ui.theme.GOTPTTKTheme
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,7 +76,12 @@ fun LandingPage() {
                 val intent = Intent(mContext, PlanningActivity::class.java)
                 mContext.startActivity(intent)
                         },
-            "Historia" to defaultClickToast
+            "Historia" to {
+                val intent = Intent(mContext,HistoryActivity::class.java)
+                mContext.startActivity(intent)
+            }
+
+
         )
     )
     if (checkingPoints)

@@ -11,6 +11,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GOTPTTK">
         <activity
+            android:name=".HistoryActivity"
+            android:exported="false"
+            android:label="@string/title_activity_history"
+            android:theme="@style/Theme.GOTPTTK" />
+        <activity
             android:name=".PlanningActivity"
             android:exported="false"
             android:label="@string/title_activity_planning"
@@ -21,6 +26,7 @@
             android:theme="@style/Theme.GOTPTTK">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
